@@ -43,9 +43,10 @@ class AutomationTest {
         val url = "https://staging.clark.de/de/app/offers/request"
         driver!!.get(url)
 
+        // Navigating to "Privathaftpflicht" option
         val privathaftpflichtVersicherungsUrl = "https://staging.clark.de/de/app/questionnaire/C22lKY?source=offers%2Frequest%3Aselect-popular-category"
         driver!!.get(privathaftpflichtVersicherungsUrl)
-        threadSleepShort()
+        threadSleepLong()
     }
 
     /**
@@ -55,12 +56,10 @@ class AutomationTest {
     @Test(dependsOnMethods = ["openClarkHomeWebPage"])
     fun offersFlow() {
         driver!!.findElement(clarkPage!!.firstWeiterButton).click()
-        driver!!.findElement(clarkPage!!.selfInsuranceSelection).click()
-        threadSleepShort()
-        driver!!.findElement(clarkPage!!.publicServiceSelection).click()
-        threadSleepShort()
-        driver!!.findElement(clarkPage!!.damageParticipationSelection).click()
-        threadSleepShort()
+        repeat(3) {
+            driver!!.findElement(clarkPage!!.firstChoiceSelection).click()
+            threadSleepShort()
+        }
         driver!!.findElement(clarkPage!!.angebotAnfordernButton).click()
         threadSleepLong()
         driver!!.findElement(clarkPage!!.zumAngebotButton).click()
@@ -101,7 +100,7 @@ class AutomationTest {
         driver!!.findElement(clarkPage!!.ibanNumberInputField).sendKeys("DE55500105174529223988")
         driver!!.findElement(clarkPage!!.scrollPageDown).sendKeys(Keys.END)
         driver!!.findElement(clarkPage!!.radioButtonOnPaymentScreen).click()
-        driver!!.findElement(clarkPage!!.tarifBestellenButton).click()
+        driver!!.findElement(clarkPage!!.confirmButton).click()
         threadSleepShort()
     }
 
@@ -111,10 +110,10 @@ class AutomationTest {
      */
     @Test(dependsOnMethods = ["fillingOutBankingInformation"])
     fun finalizingOrder() {
-        driver!!.findElement(clarkPage!!.jetztVerbindlichKaufenButton).click()
+        driver!!.findElement(clarkPage!!.confirmButton).click()
         threadSleepLong()
         assertTrue(driver!!.findElement(clarkPage!!.bestellungAbgeschlossenLabel).isDisplayed, "Order has not been completed")
-        driver!!.findElement(clarkPage!!.zueruckZurUbersichtButton).click()
+        driver!!.findElement(clarkPage!!.confirmButton).click()
         threadSleepLong()
         val closePopupButton: WebElement? = driver!!.findElement(By.xpath("/html/body/div[2]/div/div/div/button"))
         if (closePopupButton!!.isDisplayed)
